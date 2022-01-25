@@ -17,7 +17,7 @@ jobs:
         run: yarn format:check
       - name: Check quality with ESLint
         run: yarn lint
-      - name: Check types compile
-        run: yarn typecheck
+      # - name: Check types compile
+      #   run: yarn typecheck
       # - name: Check tests pass
       #   run: yarn test
