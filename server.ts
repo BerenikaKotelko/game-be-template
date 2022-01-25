@@ -13,6 +13,9 @@ config(); //Read .env file lines as though they were env vars.
 // { rejectUnauthorized: false } - when connecting to a heroku DB
 const herokuSSLSetting = { rejectUnauthorized: false };
 const sslSetting = process.env.LOCAL ? false : herokuSSLSetting;
+if (!process.env.DATABASE_URL) {
+  throw "No DATABASE_URL env var!  Have you made a .env file?  And set up dotenv?";
+}
 const dbConfig = {
   connectionString: process.env.DATABASE_URL,
   ssl: sslSetting,
@@ -27,8 +30,13 @@ const client = new Client(dbConfig);
 client.connect();
 
 app.get("/", async (req, res) => {
-  const dbres = await client.query("select * from categories");
+  try {
+    const dbres = await client.query("select * from users");
   res.json(dbres.rows);
+    
+  } catch (err) {
+    throw(err.message)
+  }
 });
 
 //Start the server on the given port
