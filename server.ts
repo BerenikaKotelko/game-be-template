@@ -32,10 +32,9 @@ client.connect();
 app.get("/", async (req, res) => {
   try {
     const dbres = await client.query("select * from users");
-  res.json(dbres.rows);
-    
+    res.json(dbres.rows);
   } catch (err) {
-    throw(err.message)
+    throw err.message;
   }
 });
 
