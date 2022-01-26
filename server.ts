@@ -65,25 +65,43 @@ app.post("/username", async (req, res) => {
     },
   });
 });
-// update the studied status of a specific resource in a specific user's study list
-// app.put(
-//   "/you-died",
-//   async (req, res) => {
-//     //when do we use req.body and when to use req.params
-//     const { user_id } = req.params;
-//     const { resource_id, studied } = req.body;
-//     const dbres = await client.query(
-//       "UPDATE study_list SET studied = $1 WHERE user_id = $2 and resource_id = $3 RETURNING *",
-//       [studied, user_id, resource_id]
-//     );
-//     res.status(200).json({
-//       status: "success",
-//       message:
-//         "Updated the to_study status of a specific resource in a specific user's study list",
-//       data: dbres.rows,
-//     });
-//   }
-// );
+
+app.put("/you-died", async (req, res) => {
+  try {
+    const { userName } = req.body;
+    const dbres = await client.query(
+      "UPDATE users SET dead_or_alive = false WHERE name = $1 RETURNING *",
+      [userName]
+    );
+    res.status(200).json({
+      status: "success",
+      message: "Updated the user's status to victim",
+      data: {
+        userName,
+      },
+    });
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+app.put("/you-survived", async (req, res) => {
+  try {
+    const { userName } = req.body;
+    const dbres = await client.query(
+      "UPDATE users SET dead_or_alive = true WHERE name = $1 RETURNING *",
+      [userName]
+    );
+    res.status(200).json({
+      status: "success",
+      message: "Updated the user's status to sherlock",
+      data: {
+        userName,
+      },
+    });
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 
 //Start the server on the given port
 const port = process.env.PORT;
