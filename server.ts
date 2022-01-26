@@ -51,6 +51,24 @@ app.get("/sherlocks", async (req, res) => {
   }
 });
 
+// add an entry into likes table to like or dislike
+app.post(
+  "/username",
+  async (req, res) => {
+    const { userName } = req.body;
+    await client.query(
+      "INSERT INTO users (name) VALUES ($1) returning *",
+      [userName]
+    );
+    res.status(200).json({
+      status: "success",
+      message: `${userName} added to database`,
+      data: {
+        userName
+      },
+    });
+  }
+);
 // update the studied status of a specific resource in a specific user's study list
 // app.put(
 //   "/you-died",
