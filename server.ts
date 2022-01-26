@@ -32,7 +32,7 @@ client.connect();
 app.get("/victims", async (req, res) => {
   try {
     const dbres = await client.query(
-      "SELECT * FROM users WHERE dead_or_alive = false"
+      "SELECT * FROM users WHERE dead_or_alive = false ORDER BY id DESC"
     );
     res.json(dbres.rows);
   } catch (err) {
@@ -43,7 +43,7 @@ app.get("/victims", async (req, res) => {
 app.get("/sherlocks", async (req, res) => {
   try {
     const dbres = await client.query(
-      "SELECT * FROM users WHERE dead_or_alive = true"
+      "SELECT * FROM users WHERE dead_or_alive = true ORDER BY id DESC"
     );
     res.json(dbres.rows);
   } catch (err) {
