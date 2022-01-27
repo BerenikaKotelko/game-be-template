@@ -32,7 +32,7 @@ client.connect();
 app.get("/victims", async (req, res) => {
   try {
     const dbres = await client.query(
-      "SELECT * FROM users WHERE dead_or_alive = false ORDER BY desc"
+      "SELECT * FROM users WHERE dead_or_alive = false ORDER BY id DESC"
     );
     res.json(dbres.rows);
   } catch (err) {
@@ -54,16 +54,29 @@ app.get("/sherlocks", async (req, res) => {
 // add an entry into likes table to like or dislike
 app.post("/username", async (req, res) => {
   const { userName } = req.body;
-  await client.query("INSERT INTO users (name) VALUES ($1) returning *", [
-    userName,
-  ]);
-  res.status(200).json({
-    status: "success",
-    message: `${userName} added to database`,
-    data: {
+  const dbresDuplicateCheck = await client.query(
+    "SELECT * from users where name = $1",
+    [userName]
+  );
+
+  if (dbresDuplicateCheck.rowCount === 0) {
+    await client.query("INSERT INTO users (name) VALUES ($1) returning *", [
       userName,
-    },
-  });
+    ]);
+    res.status(200).json({
+      status: "success",
+      message: `${userName} added to database`,
+      data: {
+        userName,
+      },
+    });
+  } else {
+    res.status(400).json({
+      status: "error",
+      message: "Trying to add duplicate resource",
+      data: dbresDuplicateCheck.rows[0],
+    });
+  }
 });
 
 app.put("/you-died", async (req, res) => {
