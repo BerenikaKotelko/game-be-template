@@ -32,7 +32,7 @@ client.connect();
 app.get("/victims", async (req, res) => {
   try {
     const dbres = await client.query(
-      "SELECT * FROM users WHERE dead_or_alive = false ORDER BY id DESC"
+      "SELECT * FROM users WHERE dead_or_alive = false ORDER BY desc"
     );
     res.json(dbres.rows);
   } catch (err) {
